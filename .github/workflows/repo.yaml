@@ -4,7 +4,6 @@ on:
     types: [package_update]
 
 env:
-  BUILD_DIR: /builder/build
   REPO_DIR: /builder/repository
 
 jobs:
@@ -46,9 +45,11 @@ jobs:
           pacman -Syyu --noconfirm
           echo "ARCH=`uname -a | sed -E 's/.+ (.+) .+/\1/'`" >> $GITHUB_ENV
           mkdir -p ${REPO_DIR}/${ARCH}
+          sudo chown -R builder .
       -
         id: pkgbuild
         working-directory: package
         run: |
+          ls -l
           sudo -u builder makepkg --clean -s --noconfirm
           ls -l *.zst
