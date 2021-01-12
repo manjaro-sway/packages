@@ -35,13 +35,13 @@ jobs:
           REPO: ${{ github.event.client_payload.repository }}
           VERSION: ${{ github.event.client_payload.version }}
           FILE: ${{ github.event.client_payload.file_name }}
-        run:
-          curl https://github.com/$REPO/releases/download/$VERSION/$FILE --output $FILE
+        run: |
+          curl --location --remote-header-name --remote-name --silent --create-dirs -O --output-dir docs https://github.com/$REPO/releases/download/$VERSION/$FILE
       - 
         id: update_repo
-        run: | 
+        run: |
           mkdir -p docs/
-          repo-add docs/packages.db.tar.gz ${{ github.event.client_payload.file_name }}
+          repo-add --new --remove --prevent-downgrade docs/packages.db.tar.gz docs/${{ github.event.client_payload.file_name }}
           git config --global user.name "Repo Update Bot"
           git config --global user.email "info@manjaro-sway.download"
           git add . 
