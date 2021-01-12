@@ -1,0 +1,54 @@
+name: 'repo'
+
+on:
+  repository_dispatch:
+    types: 
+      - package_update
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: 'where to look for a release'
+        required: true
+      release: 
+        description: 'release to download'
+        required: true
+      branch:
+        description: 'manjaro lifecycle branch'
+        required: true
+        type: choice
+        options:
+        - stable
+        - testing
+        - unstable
+
+env:
+  repository: ${{ github.event.client_payload.repository || inputs.repository }}
+  release: ${{ github.event.client_payload.release || inputs.release }}
+  branch: ${{ github.event.client_payload.branch || inputs.branch }}
+
+concurrency:
+  ## fallbacks only needed for push-events
+  group: ${{ github.event.client_payload.repository || inputs.repositor }}-${{ github.event.client_payload.branch || inputs.branch }}
+  cancel-in-progress: true
+
+jobs:
+  repo-add:
+    ## fallbacks only needed for push-events
+    name: add ${{ github.event.client_payload.repository || inputs.repository }}@${{ github.event.client_payload.release || inputs.release }} to ${{ github.event.client_payload.branch || inputs.branch }}
+    runs-on: ubuntu-latest
+    container: docker://archlinux:base
+    permissions:
+      contents: write
+    steps:
+      - name: install tools
+        shell: bash
+        run: |
+          pacman -Sy --noconfirm --needed git git-lfs github-cli
+      - id: repo-add
+        uses: manjaro-contrib/action-repo-add@main
+        with:
+          repository: ${{ env.repository }}
+          release: ${{ env.release }}
+          branch: ${{ env.branch }}
+          gpg_keyid: ${{ vars.gpg_keyid }}
+          gpg_secret_base64: ${{ secrets.gpg_secret_base64 }}

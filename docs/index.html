@@ -1,0 +1,27 @@
+---
+layout: default
+description: Packages used by Manjaro Sway Edition.
+---
+
+{% assign extensions = '.zst,.sig,.db,.files,.gz' %}
+<pre>
+### install ###
+
+## add the repo configuration:
+sudo sh -c "curl -s {{ page.url | prepend: site.baseurl | prepend: site.url | append: '$(pacman-mirrors -G)/' }} > /etc/pacman.d/{{ site.title }}.pre.repo.conf"
+
+## include the repo configuration:
+sed -i '/^\[core\]/i \Include = /etc/pacman.d/{{ site.title }}.pre.repo.conf\n' /etc/pacman.conf
+</pre>
+
+{% for file in site.static_files %}{% if extensions contains file.extname %}
+<div class="link">
+  <a
+    href="{{ page.url | prepend: site.baseurl | prepend: site.url }}{{ file.path | escape }}"
+    aria-label="{{ file.path | escape }}"
+  >
+    {{ file.path | escape }}
+    <i>{{ file.path | escape | prepend: '.' | file_size | filesize }}</i>
+  </a>
+</div>
+{% endif %}{% endfor %}

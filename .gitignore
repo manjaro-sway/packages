@@ -1,0 +1,3 @@
+**/*.old
+**/*.old.sig
+docs/_site
