@@ -52,8 +52,8 @@ jobs:
           git config --global user.email "info@manjaro-sway.download"
 
           cp -f README.md docs/index.md
-          cp -f template.html docs/_layouts/index.html
-          sed -i "s/TIMESTAMP/$(date)/g" docs/_layouts/index.html
+          cp -f template.html docs/_layouts/default.html
+          sed -i "s/TIMESTAMP/$(date)/g" docs/_layouts/default.html
 
           git add . 
           git commit -m "chore: update ${{ github.event.client_payload.repository }}@${{ github.event.client_payload.version }}"
