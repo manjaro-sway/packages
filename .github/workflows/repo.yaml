@@ -21,48 +21,25 @@ jobs:
     needs: wait
     runs-on: ubuntu-latest
     container:
-      image: docker://manjarosway/manjaro-package:latest
+      image: docker://archlinux:base-devel
     steps:
-      - 
-        name: check out build target
-        id: checkout_src_pkgbuild
-        uses: actions/checkout@v2
-        with:
-          token: "${{ secrets.GITHUB_TOKEN }}"
-          path: package
-          repository: ${{ github.event.client_payload.repository }}
-          ref:  ${{ github.event.client_payload.sha }}
-      - 
-        id: prepare
-        run: |
-          pacman -Syyu --noconfirm
-          echo "ARCH=`uname -a | sed -E 's/.+ (.+) .+/\1/'`" >> $GITHUB_ENV
-          mkdir -p ${REPO_DIR}/${ARCH}
-          sudo chown -R builder .
-      -
-        id: pkgbuild
-        working-directory: package
-        run: |
-          sudo -u builder makepkg --clean -s --noconfirm
       - 
         id: checkout_repo
         uses: actions/checkout@v2
+      -
+        id: download_release
+        uses: dsaltares/fetch-gh-release-asset@master
         with:
-          path: repo
-          lfs: true
+          repo: ${{ github.event.client_payload.repository }}
+          version: ${{ github.event.client_payload.version }}
+          file: ${{ github.event.client_payload.file_name }}
       - 
         id: update_repo
-        working-directory: repo
-        env:
-          REPO_DIR: docs/${{ env.ARCH }}
-        run: |
-          mkdir -p $REPO_DIR
-          install -D $GITHUB_WORKSPACE/package/*.pkg.tar.zst $REPO_DIR/
-          cp -f index.template.html docs/index.html
-          cd $REPO_DIR
-          repo-add packages.db.tar.gz $REPO_DIR/*.pkg.tar.zst
+        run: | 
+          mkdir -p docs/
+          repo-add docs/packages.db.tar.gz ${{ github.event.client_payload.file_name }}
           git config --global user.name "Repo Update Bot"
           git config --global user.email "info@manjaro-sway.download"
           git add . 
-          git commit -m "chore: update ${{ github.event.client_payload.repository }}"
+          git commit -m "chore: update ${{github.event.client_payload.repository }}@${{ github.event.client_payload.version }}"
           git push
