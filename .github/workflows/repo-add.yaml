@@ -21,29 +21,40 @@ jobs:
       image: docker://manjarosway/arch
     steps:
       - 
+        name: check out the repo
         id: checkout_repo
         uses: actions/checkout@v2
-      - 
+      -  
+        name: check if the repo was allowed to dispatch
         id: grant
         env:
           REPO: ${{ github.event.client_payload.repository }}
         run:
           grep -Fxq "${REPO}" allowed_repos
       -
+        name: download the package to be added to the repo
         id: download_release
         env:
           REPO: ${{ github.event.client_payload.repository }}
           VERSION: ${{ github.event.client_payload.version }}
           FILE: ${{ github.event.client_payload.file_name }}
         run: |
-          curl --location --remote-header-name --remote-name --silent --create-dirs -O --output-dir docs https://github.com/$REPO/releases/download/$VERSION/$FILE
+          rm -f docs/$FILE
+          curl --location --remote-header-name --remote-name --silent --create-dirs -O --output-dir docs \
+            https://github.com/$REPO/releases/download/$VERSION/$FILE
       - 
+        name: update the existing repo with the download package
         id: update_repo
         run: |
           mkdir -p docs/
           repo-add --new --remove --prevent-downgrade docs/packages.db.tar.gz docs/${{ github.event.client_payload.file_name }}
           git config --global user.name "Repo Update Bot"
           git config --global user.email "info@manjaro-sway.download"
+
+          cp -f README.md docs/index.md
+          cp -f template.html docs/_layouts/index.html
+          sed -i "s/TIMESTAMP/$(date)/g" docs/_layouts/index.html
+
           git add . 
-          git commit -m "chore: update ${{github.event.client_payload.repository }}@${{ github.event.client_payload.version }}"
+          git commit -m "chore: update ${{ github.event.client_payload.repository }}@${{ github.event.client_payload.version }}"
           git push
