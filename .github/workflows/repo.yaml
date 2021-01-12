@@ -1,0 +1,36 @@
+name: repo
+on:
+  repository_dispatch:
+    types: [package_update]
+
+jobs:
+  wait:
+    runs-on: ubuntu-latest
+    steps:
+      - id: wait_for_concurrent
+        uses: softprops/turnstyle@v1
+        with:
+          continue-after-seconds: 300
+          poll-interval-seconds: 5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build:
+    needs: wait
+    runs-on: ubuntu-latest
+    container:
+      image: docker://manjarosway/manjaro-package:latest
+    steps:
+      - 
+        name: checkout
+        uses: actions/checkout@v2
+        with:
+          path: repo
+          lfs: true
+      - 
+        name: checkout
+        uses: actions/checkout@v2
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          path: package
+          repository: ${{ github.event.client_payload.repository }}
+          ref:  ${{ github.event.client_payload.sha }}
