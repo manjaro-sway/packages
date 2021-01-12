@@ -24,12 +24,6 @@ jobs:
       image: docker://manjarosway/manjaro-package:latest
     steps:
       - 
-        id: checkout
-        uses: actions/checkout@v2
-        with:
-          path: repo
-          lfs: true
-      - 
         name: check out build target
         id: checkout_src_pkgbuild
         uses: actions/checkout@v2
@@ -41,7 +35,6 @@ jobs:
       - 
         id: prepare
         run: |
-          cp -f repo/repo.conf /etc/pacman.d/
           pacman -Syyu --noconfirm
           echo "ARCH=`uname -a | sed -E 's/.+ (.+) .+/\1/'`" >> $GITHUB_ENV
           mkdir -p ${REPO_DIR}/${ARCH}
@@ -50,6 +43,22 @@ jobs:
         id: pkgbuild
         working-directory: package
         run: |
-          ls -l
           sudo -u builder makepkg --clean -s --noconfirm
-          ls -l *.zst
+      - 
+        id: checkout_repo
+        uses: actions/checkout@v2
+        with:
+          path: repo
+          lfs: true
+      - 
+        id: update_repo
+        working-directory: repo
+        run: |
+          mkdir -p docs && cd docs
+          cp ../../package/*.pkg.tar.zst .
+          repo-add packages.db.tar.gz *.pkg.tar.zst
+          git config --global user.name "Repo Update Bot"
+          git config --global user.email "info@manjaro-sway.download"
+          git add . 
+          git commit -m "chore: update ${{ github.event.client_payload.repository }}"
+          git push
