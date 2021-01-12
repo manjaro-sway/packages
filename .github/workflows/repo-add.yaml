@@ -18,24 +18,23 @@ jobs:
     needs: wait
     runs-on: ubuntu-latest
     container:
-      image: docker://archlinux:base-devel
+      image: docker://manjarosway/arch
     steps:
-      - run: pacman -Syu --needed --noconfirm git git-lfs
       - 
         id: checkout_repo
         uses: actions/checkout@v2
       - 
         id: grant
         env:
-          repo: ${{ github.event.client_payload.repository }}
+          REPO: ${{ github.event.client_payload.repository }}
         run:
           grep -Fxq "${REPO}" allowed_repos
       -
         id: download_release
         env:
-          repo: ${{ github.event.client_payload.repository }}
-          version: ${{ github.event.client_payload.version }}
-          file: ${{ github.event.client_payload.file_name }}
+          REPO: ${{ github.event.client_payload.repository }}
+          VERSION: ${{ github.event.client_payload.version }}
+          FILE: ${{ github.event.client_payload.file_name }}
         run:
           curl https://github.com/$REPO/releases/download/$VERSION/$FILE --output $FILE
       - 
