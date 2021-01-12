@@ -53,10 +53,14 @@ jobs:
       - 
         id: update_repo
         working-directory: repo
+        env:
+          REPO_DIR: docs/${{ env.ARCH }}
         run: |
-          mkdir -p docs && cd docs
-          cp ../../package/*.pkg.tar.zst .
-          repo-add packages.db.tar.gz *.pkg.tar.zst
+          mkdir -p $REPO_DIR
+          install -D $GITHUB_WORKSPACE/package/*.pkg.tar.zst $REPO_DIR/
+          cp -f index.template.html docs/index.html
+          cd $REPO_DIR
+          repo-add packages.db.tar.gz $REPO_DIR/*.pkg.tar.zst
           git config --global user.name "Repo Update Bot"
           git config --global user.email "info@manjaro-sway.download"
           git add . 
