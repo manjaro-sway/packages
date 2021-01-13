@@ -39,7 +39,6 @@ jobs:
           VERSION: ${{ github.event.client_payload.version }}
           FILE: ${{ github.event.client_payload.file_name }}
         run: |
-          rm -f docs/$FILE
           curl --location --remote-header-name --remote-name --silent --create-dirs -O --output-dir docs \
             https://github.com/$REPO/releases/download/$VERSION/$FILE
       - 
@@ -49,7 +48,8 @@ jobs:
           mkdir -p docs/
           git config --global user.name "Repo Update Bot"
           git config --global user.email "info@manjaro-sway.download"
-          
+          git config pull.ff only
+
           git pull 
 
           repo-add --new --remove --prevent-downgrade docs/manjaro-sway.db.tar.gz docs/${{ github.event.client_payload.file_name }}
