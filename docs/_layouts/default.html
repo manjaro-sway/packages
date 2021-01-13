@@ -27,11 +27,13 @@
       <tbody>
         {% for file in site.static_files %}
           {% if file.extname contains 'zst' %}
-          <td>
-            <a href="{{ site.baseurl | escape }}{{ file.path | escape }}"
-              ><pre>{{ file.name | escape }}</pre></a>
-          </td>
-          <td><pre>{{ file.modified_time }}</pre></td>
+          <tr>
+            <td>
+              <a href="{{ site.baseurl | escape }}{{ file.path | escape }}"
+                ><pre>{{ file.name | escape }}</pre></a>
+            </td>
+            <td><pre>{{ file.modified_time }}</pre></td>
+          </tr>
           {% endif %}
         {% endfor %}
       </tbody>
