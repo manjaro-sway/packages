@@ -47,10 +47,13 @@ jobs:
         id: update_repo
         run: |
           mkdir -p docs/
-          repo-add --new --remove --prevent-downgrade docs/manjaro-sway.db.tar.gz docs/${{ github.event.client_payload.file_name }}
-          rm -f docs/*.old
           git config --global user.name "Repo Update Bot"
           git config --global user.email "info@manjaro-sway.download"
+          
+          git pull 
+
+          repo-add --new --remove --prevent-downgrade docs/manjaro-sway.db.tar.gz docs/${{ github.event.client_payload.file_name }}
+          rm -f docs/*.old
 
           cp -f README.md docs/index.md
 
