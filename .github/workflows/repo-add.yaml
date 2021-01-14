@@ -66,6 +66,8 @@ jobs:
 
           cp -f README.md docs/index.md
 
+          date >docs/_includes/date
+
           git add docs/*
           
           git commit -m "chore: update ${{ github.event.client_payload.repository }} to ${{ github.event.client_payload.version }}"

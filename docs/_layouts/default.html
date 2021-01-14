@@ -10,18 +10,13 @@
     <h1>Manjaro Sway Repository</h1>
   </div>
   <pre>{% include repo.conf %}</pre>
-  {% for file in site.static_files %}
-    {% if file.name contains 'db.tar.gz' %}
-      <pre>Last package added: {{ file.modified_time }}</pre>
-    {% endif %}
-  {% endfor %}
+  <pre>{% include date %}</pre>
   <h2>Packages</h1>
   <ul>
     <table class="sortable">
       <thead>
         <tr>
           <th>package</th>
-          <th>date</th>
        </tr>
       </thead>
       <tbody>
@@ -32,7 +27,6 @@
               <a href="{{ site.baseurl | escape }}{{ file.path | escape }}"
                 ><pre>{{ file.name | escape }}</pre></a>
             </td>
-            <td><pre>{{ file.modified_time }}</pre></td>
           </tr>
           {% endif %}
         {% endfor %}
