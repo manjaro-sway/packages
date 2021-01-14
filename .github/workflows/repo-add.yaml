@@ -7,14 +7,15 @@ jobs:
   wait:
     runs-on: ubuntu-latest
     steps:
-      - id: wait_for_concurrent
+      - 
+        name: sleep max 30s
+        run: sleep $((1 + $RANDOM % 30))
+      - 
+        id: wait_for_concurrent
         uses: softprops/turnstyle@v1
-        with:
-          continue-after-seconds: 300
-          poll-interval-seconds: 5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  build:
+  update:
     needs: wait
     runs-on: ubuntu-latest
     container:
@@ -39,24 +40,33 @@ jobs:
           VERSION: ${{ github.event.client_payload.version }}
           FILE: ${{ github.event.client_payload.file_name }}
         run: |
-          curl --location --remote-header-name --remote-name --silent --create-dirs -O --output-dir docs \
+          curl --location --remote-header-name --remote-name --silent -O --output-dir /tmp \
             https://github.com/$REPO/releases/download/$VERSION/$FILE
+          ls -lh /tmp/*.zst
       - 
-        name: update the existing repo with the download package
+        name: update the existing repo with the downloaded package
         id: update_repo
         run: |
-          mkdir -p docs/
+          mkdir -p docs/x86_64 docs/aarch64
           git config --global user.name "Repo Update Bot"
           git config --global user.email "info@manjaro-sway.download"
           git config pull.ff only
 
           git pull 
 
-          repo-add --new --remove --prevent-downgrade docs/manjaro-sway.db.tar.gz docs/${{ github.event.client_payload.file_name }}
-          rm -f docs/*.old
+          echo ${{ github.event.client_payload.file_name }} | grep -q -E -i -w '(x86_64|any)' && \
+            cp /tmp/${{ github.event.client_payload.file_name }} docs/x86_64/ && \
+            repo-add --new --remove --prevent-downgrade docs/x86_64/manjaro-sway.db.tar.gz docs/x86_64/${{ github.event.client_payload.file_name }}
+          
+          echo ${{ github.event.client_payload.file_name }} | grep -q -E -i -w '(aarch64|any)' && \
+            cp /tmp/${{ github.event.client_payload.file_name }} docs/aarch64/ && \
+            repo-add --new --remove --prevent-downgrade docs/aarch64/manjaro-sway.db.tar.gz docs/aarch64/${{ github.event.client_payload.file_name }}
+          
+          rm -f docs/*/*.old
 
           cp -f README.md docs/index.md
 
-          git add . 
-          git commit -m "chore: update ${{ github.event.client_payload.repository }}@${{ github.event.client_payload.version }}"
+          git add docs/*
+          
+          git commit -m "chore: update ${{ github.event.client_payload.repository }} to ${{ github.event.client_payload.version }}"
           git push
