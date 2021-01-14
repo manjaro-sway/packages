@@ -13,12 +13,7 @@
   <pre>{% include date %}</pre>
   <h2>Packages</h1>
   <ul>
-    <table class="sortable">
-      <thead>
-        <tr>
-          <th>package</th>
-       </tr>
-      </thead>
+    <table>
       <tbody>
         {% for file in site.static_files %}
           {% if file.extname contains 'zst' %}
