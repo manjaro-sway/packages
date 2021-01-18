@@ -1,0 +1,40 @@
+name: update db
+on: 
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+  schedule:
+    - cron:  '0 2 * * *'
+
+jobs:
+  repo-add:
+    runs-on: ubuntu-latest
+    container:
+      image: docker://manjarosway/arch
+    steps:
+      - 
+        name: check out the repo
+        id: checkout_repo
+        uses: actions/checkout@v2
+      - 
+        name: update the repo with all currently present packages
+        id: update_repo
+        run: |
+          mkdir -p docs/x86_64 docs/aarch64
+          git config --global user.name "Repo Update Bot"
+          git config --global user.email "info@manjaro-sway.download"
+          git config pull.ff only
+
+          git pull
+          
+          repo-add --new --remove --prevent-downgrade docs/x86_64/manjaro-sway.db.tar.gz docs/x86_64/*.zst
+          
+          repo-add --new --remove --prevent-downgrade docs/aarch64/manjaro-sway.db.tar.gz docs/aarch64/*.zst
+          
+          rm -f docs/*/*.old
+          date >docs/_includes/date
+          git add docs/*
+          
+          git commit -m "chore: update pkg databases"
+          git push
