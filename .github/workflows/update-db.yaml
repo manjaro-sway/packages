@@ -11,7 +11,7 @@ jobs:
   repo-add:
     runs-on: ubuntu-latest
     container:
-      image: docker://manjarosway/arch
+      image: docker://manjarosway/base:latest
     steps:
       - 
         name: check out the repo

@@ -19,12 +19,14 @@ jobs:
     needs: wait
     runs-on: ubuntu-latest
     container:
-      image: docker://manjarosway/arch
+      image: docker://manjarosway/base:latest
     steps:
       - 
         name: check out the repo
         id: checkout_repo
         uses: actions/checkout@v2
+        with:
+          ref: 'master'
       -  
         name: check if the repo was allowed to dispatch
         id: grant
@@ -51,18 +53,27 @@ jobs:
           git config --global user.name "Repo Update Bot"
           git config --global user.email "info@manjaro-sway.download"
           git config pull.ff only
-
           git pull 
 
           echo ${{ github.event.client_payload.file_name }} | grep -q -E -i -w '(x86_64|any)' && \
-            cp /tmp/${{ github.event.client_payload.file_name }} docs/x86_64/
+            cp /tmp/${{ github.event.client_payload.file_name }} docs/x86_64/ && \
+            echo "nothing to do for x86_64"
+
+
           echo ${{ github.event.client_payload.file_name }} | grep -q -E -i -w '(aarch64|any)' && \
-            cp /tmp/${{ github.event.client_payload.file_name }} docs/aarch64/
+            cp /tmp/${{ github.event.client_payload.file_name }} docs/aarch64/ && \
+              echo "nothing to do for aarch64"
 
           if [ -n "$(git status --porcelain)" ]; then
-            repo-add --new --remove --prevent-downgrade docs/x86_64/manjaro-sway.db.tar.gz docs/x86_64/${{ github.event.client_payload.file_name }}
-            repo-add --new --remove --prevent-downgrade docs/aarch64/manjaro-sway.db.tar.gz docs/aarch64/${{ github.event.client_payload.file_name }}
-            
+
+            echo ${{ github.event.client_payload.file_name }} | grep -q -E -i -w '(x86_64|any)' && \
+              repo-add --new --remove --prevent-downgrade docs/x86_64/manjaro-sway.db.tar.gz docs/x86_64/${{ github.event.client_payload.file_name }} && \
+              echo "nothing to do for x86_64"
+
+            echo ${{ github.event.client_payload.file_name }} | grep -q -E -i -w '(aarch64|any)' && \
+              repo-add --new --remove --prevent-downgrade docs/aarch64/manjaro-sway.db.tar.gz docs/aarch64/${{ github.event.client_payload.file_name }} && \
+              echo "nothing to do for aarch64"
+
             rm -f docs/*/*.old
 
             cp -f README.md docs/index.md
@@ -71,7 +82,7 @@ jobs:
 
             git add docs/*
                       
-            git commit -m "chore: update ${{ github.event.client_payload.repository }} to ${{ github.event.client_payload.version }}"
+            git commit -m "chore: update ${{ github.event.client_payload.repository }} (${{ github.event.client_payload.file_name }})"
             git push
           fi
                     
