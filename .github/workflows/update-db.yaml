@@ -27,6 +27,8 @@ jobs:
           git config pull.ff only
 
           git pull
+
+          rm docs/*/manjaro-sway.db.tar.gz
           
           repo-add --new --remove --prevent-downgrade docs/x86_64/manjaro-sway.db.tar.gz docs/x86_64/*.zst
           
