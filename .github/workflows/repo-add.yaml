@@ -13,6 +13,8 @@ jobs:
       - 
         id: wait_for_concurrent
         uses: softprops/turnstyle@v1
+        with:
+          poll-interval-seconds: 10
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   update:
