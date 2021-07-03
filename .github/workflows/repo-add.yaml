@@ -21,7 +21,7 @@ jobs:
     needs: wait
     runs-on: ubuntu-latest
     container:
-      image: docker://manjarosway/base:latest
+      image: docker://manjarolinux/base:latest
     steps:
       - 
         name: check out the repo
