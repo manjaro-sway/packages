@@ -50,7 +50,7 @@ jobs:
         run: |
           # import signing key (no passphrase)
           cat <(echo -e "${{ secrets.GPG_SECRET_KEY_BASE64 }}" | base64 --decode) | gpg --batch --import
-          pacman-key --keyserver pgp.mit.edu --recv-keys ${{ secrets.GPG_KEYID }}
+          pacman-key --keyserver keyserver.ubuntu.com --recv-keys ${{ secrets.GPG_KEYID }}
           pacman-key --lsign-key ${{ secrets.GPG_KEYID }}
       - name: update the existing repo with the downloaded package
         id: update_repo
