@@ -16,7 +16,7 @@
     <table>
       <tbody>
         {% for file in site.static_files %}
-          {% if file.extname contains 'zst' %}
+          {% if file.name contains 'zst' %}
           <tr>
             <td>
               <a href="{{ site.baseurl | escape }}{{ file.path | escape }}"
