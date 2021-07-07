@@ -23,21 +23,18 @@ jobs:
     container:
       image: docker://manjarolinux/base:latest
     steps:
-      - 
-        name: check out the repo
+      - name: check out the repo
         id: checkout_repo
         uses: actions/checkout@v2.3.4
         with:
           ref: 'master'
-      -  
-        name: check if the repo was allowed to dispatch
+      - name: check if the repo was allowed to dispatch
         id: grant
         env:
           REPO: ${{ github.event.client_payload.repository }}
         run:
           grep -Fxq "${REPO}" allowed_repos
-      -
-        name: download the package to be added to the repo
+      - name: download the package to be added to the repo
         id: download_release
         env:
           REPO: ${{ github.event.client_payload.repository }}
@@ -46,9 +43,16 @@ jobs:
         run: |
           curl --location --remote-header-name --remote-name --silent -O --output-dir /tmp \
             https://github.com/$REPO/releases/download/$VERSION/$FILE
-          ls -lh /tmp/*.zst
-      - 
-        name: update the existing repo with the downloaded package
+          curl --location --remote-header-name --remote-name --silent -O --output-dir /tmp \
+            https://github.com/$REPO/releases/download/$VERSION/${FILE}.sig
+          ls -lh /tmp/*.zst*
+      - name: gpg-init
+        run: |
+          # import signing key (no passphrase)
+          cat <(echo -e "${{ secrets.GPG_SECRET_KEY_BASE64 }}" | base64 --decode) | gpg --batch --import
+          pacman-key --keyserver pgp.mit.edu --recv-keys ${{ secrets.GPG_KEYID }}
+          pacman-key --lsign-key ${{ secrets.GPG_KEYID }}
+      - name: update the existing repo with the downloaded package
         id: update_repo
         run: |
           mkdir -p docs/x86_64 docs/aarch64
@@ -58,22 +62,22 @@ jobs:
           git pull 
 
           echo ${{ github.event.client_payload.file_name }} | grep -q -E -i -w '(x86_64|any)' && \
-            cp /tmp/${{ github.event.client_payload.file_name }} docs/x86_64/ && \
+            cp /tmp/${{ github.event.client_payload.file_name }}* docs/x86_64/ && \
             echo "nothing to do for x86_64"
 
 
           echo ${{ github.event.client_payload.file_name }} | grep -q -E -i -w '(aarch64|any)' && \
-            cp /tmp/${{ github.event.client_payload.file_name }} docs/aarch64/ && \
+            cp /tmp/${{ github.event.client_payload.file_name }}* docs/aarch64/ && \
               echo "nothing to do for aarch64"
 
           if [ -n "$(git status --porcelain)" ]; then
 
             echo ${{ github.event.client_payload.file_name }} | grep -q -E -i -w '(x86_64|any)' && \
-              repo-add --new --remove --prevent-downgrade docs/x86_64/manjaro-sway.db.tar.gz docs/x86_64/${{ github.event.client_payload.file_name }} && \
+              repo-add --sign --new --remove --prevent-downgrade docs/x86_64/manjaro-sway.db.tar.gz docs/x86_64/${{ github.event.client_payload.file_name }} && \
               echo "nothing to do for x86_64"
 
             echo ${{ github.event.client_payload.file_name }} | grep -q -E -i -w '(aarch64|any)' && \
-              repo-add --new --remove --prevent-downgrade docs/aarch64/manjaro-sway.db.tar.gz docs/aarch64/${{ github.event.client_payload.file_name }} && \
+              repo-add --sign --new --remove --prevent-downgrade docs/aarch64/manjaro-sway.db.tar.gz docs/aarch64/${{ github.event.client_payload.file_name }} && \
               echo "nothing to do for aarch64"
 
             rm -f docs/*/*.old
