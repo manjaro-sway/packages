@@ -9,25 +9,27 @@
   <div class="topbar">
     <h1>Manjaro Sway Repository</h1>
   </div>
-  <pre>{% include repo.conf %}</pre>
-  <pre>{% include date %}</pre>
-  <h2>Packages</h1>
-  <ul>
-    <table>
-      <tbody>
-        {% for file in site.static_files %}
-          {% if file.name contains 'zst' %}
-          <tr>
-            <td>
-              <a href="{{ site.baseurl | escape }}{{ file.path | escape }}"
-                ><pre>{{ file.path | escape }}</pre></a>
-            </td>
-          </tr>
-          {% endif %}
-        {% endfor %}
-      </tbody>
-    </table>
-  </ul>
+  <div id="container">
+    <pre>{% include repo.conf %}</pre>
+    <pre>{% include date %}</pre>
+    <h2>Packages</h1>
+    <ul>
+      <table>
+        <tbody>
+          {% for file in site.static_files %}
+            {% if file.name contains 'zst' %}
+            <tr>
+              <td>
+                <a href="{{ site.baseurl | escape }}{{ file.path | escape }}"
+                  ><pre>{{ file.path | escape }}</pre></a>
+              </td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </ul>
+  </div>
   <style>
     body {
       background: #282828;
@@ -38,14 +40,17 @@
       height: 100%;
       width: 100%;
     }
+    
     * {
       color: #eeeeee;
       text-decoration: none;
     }
+    
     .topbar {
       background: #141a1b;
       height: 30px;
     }
+    
     h1 {
       color: #16a085;
       font-size: 0.8rem;
@@ -54,33 +59,40 @@
       padding: 0 20px;
       margin: 0;
     }
+
     h1 + ul {
       height: 100%;
       padding: 20px;
       overflow-y: auto;
       overflow-x: hidden;
     }
+
     ul,
     ul.tree ul {
       list-style: none;
       margin: 0;
       padding: 0;
     }
+
     li {
       display: block;
     }
+
     ul ul {
       margin-left: 10px;
     }
+
     ul li {
       margin: 0;
       padding: 0 20px;
       color: #55b5db;
       border-left: 1px solid #16a085;
     }
+
     ul li:last-child {
       border-left: none;
     }
+
     ul li:before {
       position: relative;
       height: 28px;
@@ -91,8 +103,13 @@
       display: inline-block;
       left: -20px;
     }
+
     ul li:last-child:before {
       border-left: 1px solid #16a085;
+    }
+
+    #container {
+      margin: 20px;
     }
   </style>
 </body>
