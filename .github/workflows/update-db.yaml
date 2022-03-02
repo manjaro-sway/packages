@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: check out the repo
         id: checkout_repo
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: gpg-init
         run: |
           # import signing key (no passphrase)
