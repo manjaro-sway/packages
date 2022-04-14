@@ -38,9 +38,9 @@ jobs:
 
           rm docs/*/manjaro-sway.db.tar.gz
           
-          repo-add --sign --new --remove --prevent-downgrade docs/x86_64/manjaro-sway.db.tar.gz docs/x86_64/*.zst
+          repo-add --sign --new --remove --prevent-downgrade docs/x86_64/manjaro-sway.db.tar.gz docs/x86_64/*.zst || exit 0
           
-          repo-add --sign --new --remove --prevent-downgrade docs/aarch64/manjaro-sway.db.tar.gz docs/aarch64/*.zst
+          repo-add --sign --new --remove --prevent-downgrade docs/aarch64/manjaro-sway.db.tar.gz docs/aarch64/*.zst || exit 0
           
           rm -f docs/*/*.old
           date >docs/_includes/date
