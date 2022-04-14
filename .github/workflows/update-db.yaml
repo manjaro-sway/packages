@@ -7,6 +7,10 @@ on:
   schedule:
     - cron:  '0 2 * * *'
 
+concurrency: 
+  group: repo-update
+  cancel-in-progress: false
+
 jobs:
   repo-add:
     runs-on: ubuntu-latest

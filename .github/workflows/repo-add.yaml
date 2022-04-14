@@ -3,22 +3,12 @@ on:
   repository_dispatch:
     types: [package_update]
 
+concurrency: 
+  group: repo-update
+  cancel-in-progress: false
+
 jobs:
-  wait:
-    runs-on: ubuntu-latest
-    steps:
-      - 
-        name: sleep max 30s
-        run: sleep $((1 + $RANDOM % 30))
-      - 
-        id: wait_for_concurrent
-        uses: softprops/turnstyle@v1
-        with:
-          poll-interval-seconds: 10
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   update:
-    needs: wait
     runs-on: ubuntu-latest
     container:
       image: docker://manjarolinux/base:latest
