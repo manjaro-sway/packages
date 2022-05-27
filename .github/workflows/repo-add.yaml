@@ -13,6 +13,10 @@ jobs:
     container:
       image: docker://manjarolinux/base:latest
     steps:
+      - name: info
+        run: |
+          git --version
+          which git
       - name: check out the repo
         id: checkout_repo
         uses: actions/checkout@v3.0.2
