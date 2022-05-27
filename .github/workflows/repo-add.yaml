@@ -12,18 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: docker://manjarolinux/base:latest
-      options: --user root
     steps:
       - name: check out the repo
         id: checkout_repo
         uses: actions/checkout@v3.0.2
         with:
           ref: 'master'
-      - name: info
+      - name: setup
         run: |
-          git --version
-          which git
-          git status
+          git config --global --add safe.directory /__w/packages/packages
       - name: check if the repo was allowed to dispatch
         id: grant
         env:
