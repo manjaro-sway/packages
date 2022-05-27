@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: docker://manjarolinux/base:latest
+      options: --user root
     steps:
       - name: check out the repo
         id: checkout_repo
