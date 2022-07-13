@@ -39,15 +39,17 @@ jobs:
 
           git pull
 
-          rm -f docs/*/manjaro-sway.db.tar.gz
+          rm -f docs/*/manjaro-sway.db.* docs/*/manjaro-sway.files.*
+
+          repo-add --sign docs/x86_64/manjaro-sway.db.tar.gz
+          repo-add --sign docs/aarch64/manjaro-sway.db.tar.gz
           
-          repo-add --sign --new --remove --prevent-downgrade docs/x86_64/manjaro-sway.db.tar.gz docs/x86_64/*.zst || exit 0
-          
-          repo-add --sign --new --remove --prevent-downgrade docs/aarch64/manjaro-sway.db.tar.gz docs/aarch64/*.zst || exit 0
-          
-          rm -f docs/*/*.old docs/*/*.old.sig
+          repo-add --sign --new --remove --prevent-downgrade docs/x86_64/manjaro-sway.db.tar.gz docs/x86_64/*.zst || echo 'no new packages'
+          repo-add --sign --new --remove --prevent-downgrade docs/aarch64/manjaro-sway.db.tar.gz docs/aarch64/*.zst || echo 'no new packages'
+
+          rm -f docs/**/*.old* || echo 'no .old files found'
           date >docs/_includes/date
-          git add docs/*
+          git add docs/**/*
           
           git commit -m "chore: update pkg databases"
           git push
