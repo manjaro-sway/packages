@@ -7,7 +7,7 @@ jobs:
   update:
     runs-on: ubuntu-latest
     container:
-      image: docker://manjarolinux/base:latest
+      image: docker://manjarolinux/build:latest
     steps:
       - name: wait
         uses: softprops/turnstyle@v1

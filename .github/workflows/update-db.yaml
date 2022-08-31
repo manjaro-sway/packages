@@ -15,7 +15,7 @@ jobs:
   repo-add:
     runs-on: ubuntu-latest
     container:
-      image: docker://manjarolinux/base:latest
+      image: docker://manjarolinux/build:latest
     steps:
       - name: check out the repo
         id: checkout_repo
