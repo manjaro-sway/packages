@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: check out the repo
         id: checkout_repo
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3.1.0
       - name: setup
         run: |
           git config --global --add safe.directory /__w/packages/packages
