@@ -10,7 +10,7 @@ jobs:
       image: docker://manjarolinux/build:latest
     steps:
       - name: wait
-        uses: softprops/turnstyle@v1
+        uses: softprops/turnstyle@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

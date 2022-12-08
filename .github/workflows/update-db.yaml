@@ -1,4 +1,4 @@
-name: update db
+name: update-db
 on: 
   push:
     branches:
