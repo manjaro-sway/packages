@@ -3,18 +3,16 @@ on:
   repository_dispatch:
     types: [package_update]
 
+concurrency: 
+  group: repo-add
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
     container:
       image: docker://manjarolinux/build:latest
     steps:
-      - name: wait
-        uses: softprops/turnstyle@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          poll-interval-seconds: 5
       - name: check out the repo
         id: checkout_repo
         uses: actions/checkout@v3.1.0
