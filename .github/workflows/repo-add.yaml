@@ -13,6 +13,7 @@ jobs:
     container:
       image: docker://manjarolinux/build:latest
     steps:
+      - uses: ben-z/gh-action-mutex@v1.0-alpha-6
       - name: check out the repo
         id: checkout_repo
         uses: actions/checkout@v3.1.0
