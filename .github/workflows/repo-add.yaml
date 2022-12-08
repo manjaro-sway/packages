@@ -8,7 +8,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  update:
+  repo-add:
     runs-on: ubuntu-latest
     container:
       image: docker://manjarolinux/build:latest

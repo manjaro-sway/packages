@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  repo-add:
+  update-db:
     runs-on: ubuntu-latest
     container:
       image: docker://manjarolinux/build:latest
