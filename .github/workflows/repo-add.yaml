@@ -3,10 +3,6 @@ on:
   repository_dispatch:
     types: [package_update]
 
-concurrency: 
-  group: repo-add
-  cancel-in-progress: false
-
 jobs:
   repo-add:
     runs-on: ubuntu-latest
