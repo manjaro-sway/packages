@@ -14,7 +14,7 @@ jobs:
         id: checkout_repo
         uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
         with:
-          ref: 'master'
+          ref: 'main'
       - name: setup
         run: |
           git config --global --add safe.directory /__w/packages/packages
