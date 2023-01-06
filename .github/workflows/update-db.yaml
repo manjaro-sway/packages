@@ -59,3 +59,13 @@ jobs:
 
           git commit -m "chore: update pkg databases"
           git push
+      - name: build page
+        uses: actions/jekyll-build-pages@v1.0.6
+        with:
+          source: './docs'
+      - name: deploy cf pages
+        uses: cloudflare/wrangler-action@2.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages publish --project-name=manjaro-sway-packages ./_site
