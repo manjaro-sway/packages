@@ -38,7 +38,7 @@
           {% for file in site.static_files %} {% if file.name contains 'zst' %}
           <tr>
             <td>
-              <a href="https://packages.manjaro-sway.download/{{ file.path | escape }}">
+              <a href="https://packages.manjaro-sway.download{{ file.path | escape }}">
                 <pre>{{ file.path | escape }}</pre>
               </a>
             </td>
