@@ -31,7 +31,6 @@
   </div>
   <div id="container">
     <pre>{% include repo.conf %}</pre>
-    <pre>{% include date %}</pre>
     <h2>Packages</h2>
     <ul>
       <table>
@@ -39,7 +38,7 @@
           {% for file in site.static_files %} {% if file.name contains 'zst' %}
           <tr>
             <td>
-              <a href="{{ site.baseurl | escape }}{{ file.path | escape }}">
+              <a href="https://packages.manjaro-sway.download/{{ file.path | escape }}">
                 <pre>{{ file.path | escape }}</pre>
               </a>
             </td>
