@@ -43,7 +43,7 @@
           href="https://packages.manjaro-sway.download{{ file.path | escape }}"
           aria-label="{{ file.path | escape }}"
         >
-      {{ file.path | escape }}<i>{{ file.path | escape | prepend: '.' | file_size | filesize }}</i>, <i>{{ file.path | escape | prepend: '.' | file_date }}</i>
+      {{ file.path | escape }} <i>{{ file.path | escape | prepend: '.' | file_size | filesize }}</i>, <i>{{ file.path | escape | prepend: '.' | file_date }}</i>
       </a>
       {% endif %} {% endfor %}
       </pre>
