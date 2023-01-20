@@ -37,16 +37,18 @@
     <div id="container">
       <pre>{% include repo.conf %}</pre>
       <h2>Packages</h2>
-      <pre id="direct-links" style="text-shadow: 2px 2px #282828">
-      {% for file in site.static_files %} {% if file.name contains 'zst' %}
-      <a
+      {% for file in site.static_files %}{% if file.name contains 'zst' %}
+      <div class="link">
+        <a
           href="https://packages.manjaro-sway.download{{ file.path | escape }}"
           aria-label="{{ file.path | escape }}"
         >
-      {{ file.path | escape }} <i>{{ file.path | escape | prepend: '.' | file_size | filesize }}</i>, <i>{{ file.path | escape | prepend: '.' | file_date }}</i>
-      </a>
-      {% endif %} {% endfor %}
-      </pre>
+          {{ file.path | escape }}
+          <i>{{ file.path | escape | prepend: '.' | file_size | filesize }}</i>,
+          <i>{{ file.path | escape | prepend: '.' | file_date }}</i>
+        </a>
+      </div>
+      {% endif %}{% endfor %}
     </div>
     <style>
       * {
@@ -57,6 +59,12 @@
       .topbar {
         background: #141a1b;
         height: 30px;
+      }
+
+      .link {
+        margin-bottom: 10px;
+        font-family: monospace;
+        text-shadow: 2px 2px #282828;
       }
 
       body {
