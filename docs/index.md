@@ -1,0 +1,1 @@
+# Manjaro Sway Repo
