@@ -1,0 +1,6 @@
+title: Manjaro Sway Edition Repository
+email: info@manjaro-sway.download
+url: "https://packages.manjaro-sway.download"
+
+plugins:
+  - jekyll-file-size
