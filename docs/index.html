@@ -44,7 +44,7 @@
           aria-label="{{ file.path | escape }}"
         >
           {{ file.path | escape }}
-          <i>{{ file.path | escape | prepend: '.' | file_size | filesize }}</i>,
+          <i>{{ file.path | escape | prepend: '.' | file_size | filesize }}</i>
         </a>
       </div>
       {% endif %}{% endfor %}
