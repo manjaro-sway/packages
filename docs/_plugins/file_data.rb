@@ -1,7 +1,7 @@
 module Jekyll
     module MyFilters
       def file_date(input)
-        File.birthtime(input)
+        File.ctime(input)
       end
     end
 end
