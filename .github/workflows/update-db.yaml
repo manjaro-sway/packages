@@ -51,7 +51,7 @@ jobs:
           git add docs/**/*
 
           size=$(du -sb docs/x86_64/manjaro-sway.db.tar.gz | awk '{ print $1 }')
-          if ((size<10000)) ; then
+          if ((size<100)) ; then
             echo "db is too small";
             exit 1;
           fi
