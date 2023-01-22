@@ -5,7 +5,7 @@ description: Packages used by Manjaro Sway Edition.
 
 <pre>{% include repo.conf %}</pre>
 <h2>Packages</h2>
-{% for file in site.static_files %}{% if file.name contains 'zst' %}
+{% for file in site.static_files %}{% if file.extname == '.zst' %}
   <div class="link">
     <a
       href="https://packages.manjaro-sway.download{{ file.path | escape }}"
