@@ -2,5 +2,12 @@ title: Manjaro Sway Edition Repository
 email: info@manjaro-sway.download
 url: "https://packages.manjaro-sway.download"
 
+remote_theme: manjaro-sway/manjaro-sway
+
 plugins:
   - jekyll-file-size
+  - jekyll-webp
+
+webp:
+  enabled: true
+  formats: [".jpeg", ".jpg", ".png", ".tiff"]

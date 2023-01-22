@@ -70,13 +70,8 @@ jobs:
               repo-add --sign --new --remove --prevent-downgrade docs/aarch64/manjaro-sway.db.tar.gz docs/aarch64/${{ github.event.client_payload.file_name }} && \
               echo "nothing to do for aarch64"
 
-            rm -f docs/*/*.old
-
-            cp -f README.md docs/index.md
-
-            date >docs/_includes/date
-
-            git add docs/*
+            rm -f docs/**/*.old* || echo 'no .old files found'
+            git add docs/**/*
 
             size=$(du -sb docs/x86_64/manjaro-sway.db.tar.gz | awk '{ print $1 }')
             if ((size<10000)) ; then
