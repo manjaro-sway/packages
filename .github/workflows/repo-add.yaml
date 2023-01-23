@@ -66,3 +66,6 @@ jobs:
             git commit -m "chore: update ${{ github.event.client_payload.repository }} (${{ github.event.client_payload.version }})"
             git push
           fi
+      - uses: peter-evans/repository-dispatch@26b39ed245ab8f31526069329e112ab2fb224588 # v2
+        with:
+          event-type: new_release
