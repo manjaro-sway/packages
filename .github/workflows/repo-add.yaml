@@ -18,6 +18,7 @@ jobs:
       - name: setup
         run: |
           git config --global --add safe.directory /__w/packages/packages
+          sudo pacman -Sy --noconfirm --needed github-cli
       - name: check if the repo was allowed to dispatch
         id: grant
         env:
@@ -26,15 +27,9 @@ jobs:
           grep -Fxq "${REPO}" allowed_repos
       - name: download the package to be added to the repo
         id: download_release
-        env:
-          REPO: ${{ github.event.client_payload.repository }}
-          VERSION: ${{ github.event.client_payload.version }}
-          FILE: ${{ github.event.client_payload.file_name }}
         run: |
-          curl --location --remote-header-name --remote-name --silent -O --output-dir /tmp \
-            https://github.com/$REPO/releases/download/$VERSION/$FILE
-          curl --location --remote-header-name --remote-name --silent -O --output-dir /tmp \
-            https://github.com/$REPO/releases/download/$VERSION/${FILE}.sig
+          echo ${{ github.token }} | gh auth login --with-token
+          gh release download ${{ github.event.client_payload.version }} --repo ${{ github.event.client_payload.repository }} -D /tmp/
           ls -lh /tmp/*.zst*
       - name: gpg-init
         run: |
@@ -51,24 +46,13 @@ jobs:
           git config pull.ff only
           git pull 
 
-          echo ${{ github.event.client_payload.file_name }} | grep -q -E -i -w '(x86_64|any)' && \
-            cp /tmp/${{ github.event.client_payload.file_name }}* docs/x86_64/ && \
-            echo "nothing to do for x86_64"
-
-
-          echo ${{ github.event.client_payload.file_name }} | grep -q -E -i -w '(aarch64|any)' && \
-            cp /tmp/${{ github.event.client_payload.file_name }}* docs/aarch64/ && \
-              echo "nothing to do for aarch64"
+          /bin/cp -f /tmp/*x86_64.pkg.tar.zst docs/x86_64/ || echo "nothing to do for x86_64"
+          /bin/cp -f /tmp/*aarch64.pkg.tar.zst docs/aarch64/ || echo "nothing to do for aarch64"
 
           if [ -n "$(git status --porcelain)" ]; then
 
-            echo ${{ github.event.client_payload.file_name }} | grep -q -E -i -w '(x86_64|any)' && \
-              repo-add --sign --new --remove --prevent-downgrade docs/x86_64/manjaro-sway.db.tar.gz docs/x86_64/${{ github.event.client_payload.file_name }} && \
-              echo "nothing to do for x86_64"
-
-            echo ${{ github.event.client_payload.file_name }} | grep -q -E -i -w '(aarch64|any)' && \
-              repo-add --sign --new --remove --prevent-downgrade docs/aarch64/manjaro-sway.db.tar.gz docs/aarch64/${{ github.event.client_payload.file_name }} && \
-              echo "nothing to do for aarch64"
+            repo-add --sign --new --remove --prevent-downgrade docs/x86_64/manjaro-sway.db.tar.gz docs/x86_64/*.zst 
+            repo-add --sign --new --remove --prevent-downgrade docs/aarch64/manjaro-sway.db.tar.gz docs/aarch64/*.zst
 
             rm -f docs/**/*.old* || echo 'no .old files found'
             git add docs/**/*
@@ -79,6 +63,6 @@ jobs:
               exit 1;
             fi
 
-            git commit -m "chore: update ${{ github.event.client_payload.repository }} (${{ github.event.client_payload.file_name }})"
+            git commit -m "chore: update ${{ github.event.client_payload.repository }} (${{ github.event.client_payload.version }})"
             git push
           fi
