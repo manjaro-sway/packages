@@ -46,8 +46,8 @@ jobs:
           git config pull.ff only
           git pull 
 
-          /bin/cp -f /tmp/*x86_64.pkg.tar.zst docs/x86_64/ || echo "nothing to do for x86_64"
-          /bin/cp -f /tmp/*aarch64.pkg.tar.zst docs/aarch64/ || echo "nothing to do for aarch64"
+          /bin/cp -f /tmp/*x86_64.pkg.tar.zst /tmp/*x86_64.pkg.tar.zst.sig docs/x86_64/ || echo "nothing to do for x86_64"
+          /bin/cp -f /tmp/*aarch64.pkg.tar.zst /tmp/*aarch64.pkg.tar.sig docs/aarch64/ || echo "nothing to do for aarch64"
 
           if [ -n "$(git status --porcelain)" ]; then
 
