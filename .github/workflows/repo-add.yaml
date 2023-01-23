@@ -43,13 +43,12 @@ jobs:
           mkdir -p docs/x86_64 docs/aarch64
           git config --global user.name "Repo Update Bot"
           git config --global user.email "info@manjaro-sway.download"
-          git config pull.ff only
-          git pull 
 
-          /bin/cp -f /tmp/*x86_64.pkg.tar.zst /tmp/*x86_64.pkg.tar.zst.sig docs/x86_64/ || echo "nothing to do for x86_64"
-          /bin/cp -f /tmp/*aarch64.pkg.tar.zst /tmp/*aarch64.pkg.tar.sig docs/aarch64/ || echo "nothing to do for aarch64"
+          [[ -e /tmp/*x86_64* ]] && cp -f /tmp/*x86_64* docs/x86_64/
+          [[ -e /tmp/*aarch64* ]] && cp -f /tmp/*aarch64* docs/aarch64/
 
           if [ -n "$(git status --porcelain)" ]; then
+            rm -f docs/x86_64/manjaro-sway.db.tar.gz docs/aarch64/manjaro-sway.db.tar.gz
 
             repo-add --sign --new --remove --prevent-downgrade docs/x86_64/manjaro-sway.db.tar.gz docs/x86_64/*.zst 
             repo-add --sign --new --remove --prevent-downgrade docs/aarch64/manjaro-sway.db.tar.gz docs/aarch64/*.zst
