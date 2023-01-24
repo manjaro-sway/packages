@@ -44,7 +44,7 @@ jobs:
           git config --global user.name "Repo Update Bot"
           git config --global user.email "info@manjaro-sway.download"
 
-          cp -f /tmp/*x86_64* docs/x86_64/ || cp -f /tmp/*aarch64* docs/aarch64/
+          cp -f /tmp/*-x86_64-* /tmp/*-any-* docs/x86_64/ || cp -f /tmp/*aarch64* /tmp/*-any-* docs/aarch64/
 
           if [ -n "$(git status --porcelain)" ]; then
             rm -f docs/*/manjaro-sway.db* docs/*/manjaro-sway.files*
