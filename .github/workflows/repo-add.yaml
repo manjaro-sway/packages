@@ -44,11 +44,11 @@ jobs:
           git config --global user.email "info@manjaro-sway.download"
 
           TARGET_DIR=""
-          [[ "${{ github.event.client_payload.version }}" =~ ^testing ]] && TARGET_DIR="testing/"
-          [[ "${{ github.event.client_payload.version }}" =~ ^unstable ]] && TARGET_DIR="unstable/"
+          [[ "${{ github.event.client_payload.version }}" =~ ^testing ]] && TARGET_DIR="testing"
+          [[ "${{ github.event.client_payload.version }}" =~ ^unstable ]] && TARGET_DIR="unstable"
 
-          AMD64_PATH="docs/${TARGET_DIR}x86_64/"
-          AARCH64_PATH="docs/${TARGET_DIR}aarch64/"
+          AMD64_PATH="docs/${TARGET_DIR}/x86_64/"
+          AARCH64_PATH="docs/${TARGET_DIR}/aarch64/"
 
           mkdir -p $AMD64_PATH $AARCH64_PATH
 
@@ -57,7 +57,7 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             rm -f docs/*/manjaro-sway.db* docs/*/manjaro-sway.files*
 
-            repo-add --sign --new --remove --prevent-downgrade $AMD64_PATH/manjaro-sway.db.tar.gz $AMD64_PATH/*.zst 
+            repo-add --sign --new --remove --prevent-downgrade $AMD64_PATH/manjaro-sway.db.tar.gz $AMD64_PATH/*.zst || \
             repo-add --sign --new --remove --prevent-downgrade $AARCH64_PATH/manjaro-sway.db.tar.gz $AARCH64_PATH/*.zst
 
             rm -f docs/**/*.old* || echo 'no .old files found'
