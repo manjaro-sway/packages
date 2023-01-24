@@ -47,8 +47,9 @@ jobs:
           [[ -e /tmp/*x86_64* ]] && cp -f /tmp/*x86_64* docs/x86_64/
           [[ -e /tmp/*aarch64* ]] && cp -f /tmp/*aarch64* docs/aarch64/
 
-          if [ -n "$(git status --porcelain)" ]; then
-            rm -f docs/x86_64/manjaro-sway.db.tar.gz docs/aarch64/manjaro-sway.db.tar.gz
+          if [ -n "$(git status --porcelain)" || ! -f manjaro-sway.db.tar.gz ]; then
+            rm -f docs/*/manjaro-sway.db*
+            rm -f docs/*/manjaro-sway.files*
 
             repo-add --sign --new --remove --prevent-downgrade docs/x86_64/manjaro-sway.db.tar.gz docs/x86_64/*.zst 
             repo-add --sign --new --remove --prevent-downgrade docs/aarch64/manjaro-sway.db.tar.gz docs/aarch64/*.zst
