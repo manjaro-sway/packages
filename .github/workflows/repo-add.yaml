@@ -47,12 +47,15 @@ jobs:
           [[ "${{ github.event.client_payload.version }}" =~ ^testing ]] && TARGET_DIR="testing"
           [[ "${{ github.event.client_payload.version }}" =~ ^unstable ]] && TARGET_DIR="unstable"
 
-          AMD64_PATH="docs/${TARGET_DIR}/x86_64/"
-          AARCH64_PATH="docs/${TARGET_DIR}/aarch64/"
+          AMD64_PATH="docs/${TARGET_DIR:+$TARGET_DIR/}/x86_64/"
+          AARCH64_PATH="docs/${TARGET_DIR:+$TARGET_DIR/}/aarch64/"
 
           mkdir -p $AMD64_PATH $AARCH64_PATH
 
-          cp -f /tmp/*-x86_64* $AMD64_PATH || cp -f /tmp/*-aarch64* $AARCH64_PATH || cp -f /tmp/*-any* $AMD64_PATH || cp -f /tmp/*-any* $AARCH64_PATH
+          cp -f /tmp/*-x86_64* $AMD64_PATH || echo "not found"
+          cp -f /tmp/*-aarch64* $AARCH64_PATH || echo "not found"
+          cp -f /tmp/*-any* $AMD64_PATH || echo "not found"
+          cp -f /tmp/*-any* $AARCH64_PATH || echo "not found"
 
           if [ -n "$(git status --porcelain)" ]; then
             rm -f $AMD64_PATH/manjaro-sway.db* $AMD64_PATH/manjaro-sway.files*
