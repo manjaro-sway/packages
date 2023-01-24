@@ -55,25 +55,14 @@ jobs:
           cp -f /tmp/*-x86_64* $AMD64_PATH || cp -f /tmp/*-aarch64* $AARCH64_PATH || cp -f /tmp/*-any* $AMD64_PATH || cp -f /tmp/*-any* $AARCH64_PATH
 
           if [ -n "$(git status --porcelain)" ]; then
-            rm -f docs/*/manjaro-sway.db* docs/*/manjaro-sway.files*
+            rm -f $AMD64_PATH/manjaro-sway.db* $AMD64_PATH/manjaro-sway.files*
+            rm -f $AARCH64_PATH/manjaro-sway.db* $AARCH64_PATH/manjaro-sway.files*
 
             repo-add --sign --new --remove --prevent-downgrade $AMD64_PATH/manjaro-sway.db.tar.gz $AMD64_PATH/*.zst || \
             repo-add --sign --new --remove --prevent-downgrade $AARCH64_PATH/manjaro-sway.db.tar.gz $AARCH64_PATH/*.zst
 
             rm -f docs/**/*.old* || echo 'no .old files found'
             git add docs/**/*
-
-            size=$(du -sb $AMD64_PATH/manjaro-sway.db.tar.gz | awk '{ print $1 }')
-            if ((size<100)) ; then
-              echo "db is too small";
-              exit 1;
-            fi
-
-            size=$(du -sb $AARCH64_PATH/manjaro-sway.db.tar.gz | awk '{ print $1 }')
-            if ((size<100)) ; then
-              echo "db is too small";
-              exit 1;
-            fi
 
             git commit -m "chore: update ${{ github.event.client_payload.repository }} (${{ github.event.client_payload.version }})"
             git push
