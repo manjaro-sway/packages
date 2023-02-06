@@ -8,10 +8,10 @@ description: Packages used by Manjaro Sway Edition.
 ### install ###
 
 ## add the repo configuration:
-sudo sh -c "curl -s {{ page.url | prepend: site.baseurl | prepend: site.url | append: '$(pacman-mirrors -G)/' }} > /etc/pacman.d/{{ site.title }}.pre.repo.conf"
+sudo sh -c "curl -s {{ page.url | prepend: site.baseurl | prepend: site.url | append: '$(pacman-mirrors -G)/' }} > /etc/pacman.d/{{ site.name || site.title }}.pre.repo.conf"
 
 ## include the repo configuration:
-sed -i '/^\[core\]/i \Include = /etc/pacman.d/{{ site.title }}.pre.repo.conf\n' /etc/pacman.conf
+sudo sh -c "sed -i '/^\[core\]/i \Include = /etc/pacman.d/{{ site.name || site.title }}.pre.repo.conf\n' /etc/pacman.conf"
 </pre>
 
 {% for file in site.static_files %}{% if extensions contains file.extname %}
