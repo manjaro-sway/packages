@@ -1,3 +1,3 @@
 [{{ site.name || site.title }}]
-SigLevel = Optional TrustAll
+SigLevel = PackageRequired
 Server = {{ page.url | prepend: site.baseurl | prepend: site.url | append: '$arch' }}
