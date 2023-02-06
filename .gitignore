@@ -1,7 +1,3 @@
 **/*.old
 **/*.old.sig
 docs/_site
-docs/x86_64
-docs/aarch64
-docs/x86_64/*
-docs/aarch64/*
