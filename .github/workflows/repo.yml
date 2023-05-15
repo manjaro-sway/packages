@@ -28,7 +28,7 @@ env:
 
 concurrency:
   ## fallbacks only needed for push-events
-  group: ${{ github.event.client_payload.repository || inputs.repositor }}-${{ github.event.client_payload.branch || inputs.branch }}
+  group: ${{ github.event.client_payload.repository || inputs.repository }}-${{ github.event.client_payload.branch || inputs.branch }}
   cancel-in-progress: true
 
 jobs:
@@ -48,6 +48,7 @@ jobs:
         uses: manjaro-contrib/action-repo-add@main
         with:
           repository: ${{ env.repository }}
+          name: 'manjaro-sway'
           release: ${{ env.release }}
           branch: ${{ env.branch }}
           gpg_keyid: ${{ vars.gpg_keyid }}

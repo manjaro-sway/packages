@@ -1,0 +1,74 @@
+name: 'repo-remove'
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'package to remove'
+        required: true
+
+concurrency:
+  ## fallbacks only needed for push-events
+  group: remove-package
+  cancel-in-progress: true
+
+jobs:
+  repo-add:
+    ## fallbacks only needed for push-events
+    name: remove ${{ inputs.package }}
+    runs-on: ubuntu-latest
+    container: docker://archlinux:base
+    permissions:
+      contents: write
+    steps:
+        - name: install tools
+          shell: bash
+          run: |
+            pacman -Sy --noconfirm --needed git git-lfs
+        - name: check tools are installed
+          shell: bash
+          run: |
+            command -v git
+            command -v git-lfs
+            command -v repo-add
+        - name: wait
+          uses: softprops/turnstyle@d19765feea3939d2256486c30e5372d1dc6533c7
+          env:
+            GITHUB_TOKEN: ${{ github.token }}
+        - name: checkout
+          uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+          with:
+            fetch-depth: 1
+            lfs: true
+            path: 'repo'
+            ref: ${{ github.event.repository.default_branch }}
+        - name: set workdir
+          shell: bash
+          run: echo "WORKDIR=/__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}/repo" >>$GITHUB_ENV
+        - name: setup git
+          shell: bash
+          working-directory: ${{ env.WORKDIR }}
+          run: |
+            git config user.name repo-add-bot
+            git config user.email info@manjaro.download
+        - name: remove package
+          shell: bash
+          working-directory: ${{ env.WORKDIR }}
+          run: |
+            for arch in x86_64 aarch64; do
+              for branch in stable testing unstable; do
+                repo_dir=docs/$branch/$arch
+                rm -f $repo_dir/${{ inputs.package }}-*.pkg.tar.zst
+                rm -f $repo_dir/${{ inputs.package }}-*.pkg.tar.zst.sig
+                repo-remove $repo_dir/manjaro-sway.db.tar.gz ${{ inputs.package }} || echo 'package not found'
+              done
+            done
+  
+            rm -f docs/**/*.old* || echo 'no .old files found'
+  
+            if [[ `git status --porcelain` ]]; then
+              git add docs/**/*
+              git status --porcelain
+              git commit -m "chore: removed ${{ inputs.package }}"
+              git push
+            fi
