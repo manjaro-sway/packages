@@ -7,11 +7,15 @@ description: Packages used by Manjaro Sway Edition.
 <pre>
 ### install ###
 
-## add the repo configuration:
-sudo sh -c "curl -s {{ page.url | prepend: site.baseurl | prepend: site.url | append: '$(pacman-mirrors -G)/' }} > /etc/pacman.d/{{ site.title }}.pre.repo.conf"
+## remove existing manjaro-sway repository configuration
+sudo sed -i '/\[manjaro-sway\]/,+2 d'  /etc/pacman.conf
 
-## include the repo configuration:
-sed -i '/^\[core\]/i \Include = /etc/pacman.d/{{ site.title }}.pre.repo.conf\n' /etc/pacman.conf
+## include the repo configuration
+sudo sed -i '/^\[core\]/i \Include = /etc/pacman.d/{{ site.name or site.title }}.repo.conf\n' /etc/pacman.conf
+
+## add or update the repo configuration
+## additionally run this after switching manjaro lifecycle branches!
+sudo sh -c "curl -s {{ page.url | prepend: site.baseurl | prepend: site.url | append: '$(pacman-mirrors -G)/' }} > /etc/pacman.d/{{ site.name or site.title }}.repo.conf"
 </pre>
 
 {% for file in site.static_files %}{% if extensions contains file.extname %}

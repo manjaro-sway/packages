@@ -48,6 +48,7 @@ jobs:
         uses: manjaro-contrib/action-repo-add@main
         with:
           repository: ${{ env.repository }}
+          name: 'manjaro-sway'
           release: ${{ env.release }}
           branch: ${{ env.branch }}
           gpg_keyid: ${{ vars.gpg_keyid }}
