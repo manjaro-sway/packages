@@ -1,6 +1,6 @@
 title: Manjaro Sway Edition Repository
 email: info@manjaro-sway.download
-url: "https://pkg.manjaro-sway.download"
+url: "https://packages.manjaro-sway.download"
 name: manjaro-sway
 
 remote_theme: manjaro-sway/manjaro-sway
