@@ -1,0 +1,72 @@
+name: 'repo-remove'
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'package to remove'
+        required: true
+
+concurrency:
+  ## fallbacks only needed for push-events
+  group: remove-package
+  cancel-in-progress: true
+
+jobs:
+  repo-add:
+    ## fallbacks only needed for push-events
+    name: remove ${{ inputs.package }}
+    runs-on: ubuntu-latest
+    container: docker://archlinux:base
+    permissions:
+      contents: write
+    steps:
+        - name: install tools
+          shell: bash
+          run: |
+            pacman -Sy --noconfirm --needed git git-lfs
+        - name: check tools are installed
+          shell: bash
+          run: |
+            command -v git
+            command -v git-lfs
+            command -v repo-add
+        - name: wait
+          uses: softprops/turnstyle@ca99add00ff0c9cbc697d22631d2992f377e5bd5
+          env:
+            GITHUB_TOKEN: ${{ github.token }}
+        - name: checkout
+          uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+          with:
+            fetch-depth: 1
+            lfs: true
+            path: 'repo'
+            ref: ${{ github.event.repository.default_branch }}
+        - name: set workdir
+          shell: bash
+          run: echo "WORKDIR=/__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}/repo" >>$GITHUB_ENV
+        - name: setup git
+          shell: bash
+          working-directory: ${{ env.WORKDIR }}
+          run: |
+            git config user.name repo-add-bot
+            git config user.email info@manjaro.download
+        - name: remove package
+          shell: bash
+          working-directory: ${{ env.WORKDIR }}
+          run: |
+            for arch in x86_64 aarch64; do
+              for branch in stable testing unstable; do
+                repo_dir=docs/$branch/$arch
+                repo-remove $repo_dir/manjaro-sway.db.tar.gz ${{ inputs.package }}
+              done
+            done
+  
+            rm -f docs/**/*.old* || echo 'no .old files found'
+  
+            if [[ `git status --porcelain` ]]; then
+              git add docs/**/*
+              git status --porcelain
+              git commit -m "chore: removed ${{ inputs.package }}"
+              git push
+            fi
