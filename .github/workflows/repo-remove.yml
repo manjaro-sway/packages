@@ -58,8 +58,8 @@ jobs:
             for arch in x86_64 aarch64; do
               for branch in stable testing unstable; do
                 repo_dir=docs/$branch/$arch
-                rm $repo_dir/${{ inputs.package }}-*.pkg.tar.zst
-                rm $repo_dir/${{ inputs.package }}-*.pkg.tar.zst.sig
+                rm -f $repo_dir/${{ inputs.package }}-*.pkg.tar.zst
+                rm -f $repo_dir/${{ inputs.package }}-*.pkg.tar.zst.sig
                 repo-remove $repo_dir/manjaro-sway.db.tar.gz ${{ inputs.package }} || echo 'package not found'
               done
             done
