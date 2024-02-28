@@ -15,7 +15,7 @@ sudo sed -i '/^\[core\]/i \Include = /etc/pacman.d/{{ site.name or site.title }}
 
 ## add or update the repo configuration
 ## additionally run this after switching manjaro lifecycle branches!
-sudo sh -c "curl -s {{ page.url | prepend: site.baseurl | prepend: site.url | append: '$(pacman-mirrors -G)/' }} > /etc/pacman.d/{{ site.name or site.title }}.repo.conf"
+sudo sh -c "curl -s {{ page.url | prepend: site.baseurl | prepend: site.url | append: '$(pacman-mirrors -G | sed -e "s/^arm-//")/' }} > /etc/pacman.d/{{ site.name or site.title }}.repo.conf"
 </pre>
 
 {% for file in site.static_files %}{% if extensions contains file.extname %}
