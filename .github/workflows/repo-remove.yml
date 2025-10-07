@@ -32,7 +32,7 @@ jobs:
             command -v git-lfs
             command -v repo-add
         - name: wait
-          uses: softprops/turnstyle@163386f5da8da0d39195836095eeb9220114ef7a
+          uses: softprops/turnstyle@9d692f15fa9f84928799bccac2dba6565e024bdf
           env:
             GITHUB_TOKEN: ${{ github.token }}
         - name: checkout
