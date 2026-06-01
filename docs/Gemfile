@@ -12,5 +12,5 @@ gem "jekyll", '4.4.1'
 group :jekyll_plugins do
     gem 'jekyll-file-size', '0.0.7'
     gem 'jekyll-webp', '1.0.0'
-    gem "jekyll-remote-theme", '0.4.3'
+    gem "jekyll-remote-theme", '0.5.1'
 end
