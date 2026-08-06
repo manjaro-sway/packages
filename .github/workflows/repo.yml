@@ -45,7 +45,7 @@ jobs:
         run: |
           pacman -Sy --noconfirm --needed git git-lfs github-cli
       - id: repo-add
-        uses: manjaro-contrib/action-repo-add@8d867396ce8611d0f03836a93c61c8ce497a9f8c # main
+        uses: manjaro-contrib/action-repo-add@a0c1e6a3a299285e10ddb3cb2db359eb885b3669 # main
         with:
           repository: ${{ env.repository }}
           name: 'manjaro-sway'
